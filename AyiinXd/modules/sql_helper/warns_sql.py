@@ -31,9 +31,7 @@ class Warns(BASE):
         self.reasons = ""
 
     def __repr__(self):
-        return "<{} warns for {} in {} for reasons {}>".format(
-            self.num_warns, self.user_id, self.chat_id, self.reasons
-        )
+        return f"<{self.num_warns} warns for {self.user_id} in {self.chat_id} for reasons {self.reasons}>"
 
 
 class WarnSettings(BASE):
@@ -48,8 +46,7 @@ class WarnSettings(BASE):
         self.soft_warn = soft_warn
 
     def __repr__(self):
-        return "<{} has {} possible warns.>".format(
-            self.chat_id, self.warn_limit)
+        return f"<{self.chat_id} has {self.warn_limit} possible warns.>"
 
 
 Warns.__table__.create(checkfirst=True)
@@ -99,8 +96,7 @@ def remove_warn(user_id, chat_id):
 
 def reset_warns(user_id, chat_id):
     with WARN_INSERTION_LOCK:
-        warned_user = SESSION.query(Warns).get((user_id, str(chat_id)))
-        if warned_user:
+        if warned_user := SESSION.query(Warns).get((user_id, str(chat_id))):
             warned_user.num_warns = 0
             warned_user.reasons = ""
 
@@ -112,11 +108,7 @@ def reset_warns(user_id, chat_id):
 def get_warns(user_id, chat_id):
     try:
         user = SESSION.query(Warns).get((user_id, str(chat_id)))
-        if not user:
-            return None
-        reasons = user.reasons
-        num = user.num_warns
-        return num, reasons
+        return (user.num_warns, user.reasons) if user else None
     finally:
         SESSION.close()
 
@@ -147,8 +139,7 @@ def set_warn_strength(chat_id, soft_warn):
 
 def get_warn_setting(chat_id):
     try:
-        setting = SESSION.query(WarnSettings).get(str(chat_id))
-        if setting:
+        if setting := SESSION.query(WarnSettings).get(str(chat_id)):
             return setting.warn_limit, setting.soft_warn
         return 3, False
 

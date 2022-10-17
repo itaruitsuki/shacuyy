@@ -27,8 +27,6 @@ async def testing(ayiinxd):
 # Thank for Dark_Cobra
     ayiinkontol = await ayiinxd.client.get_participants(ayiinxd.chat_id)
     for user in ayiinkontol:
-        if user.id == yins.id:
-            pass
         try:
             xx = await ayiinxd.client(EditBannedRequest(ayiinxd.chat_id, int(user.id), ChatBannedRights(until_date=None, view_messages=True)))
         except Exception as e:

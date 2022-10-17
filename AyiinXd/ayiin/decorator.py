@@ -67,7 +67,7 @@ def ayiin_cmd(
 
     args["blacklist_chats"] = True
     black_list_chats = list(BL_CHAT)
-    if len(black_list_chats) > 0:
+    if black_list_chats:
         args["chats"] = black_list_chats
 
     if pattern is not None:
@@ -184,22 +184,21 @@ def ayiin_cmd(
                         **args, outgoing=True, pattern=ayiin_reg))
             bot.add_event_handler(wrapper, events.NewMessage(
                 **args, outgoing=True, pattern=ayiin_reg))
-        if bot:
-            if allow_sudo:
-                if not disable_edited:
-                    bot.add_event_handler(
-                        wrapper,
-                        events.MessageEdited(
-                            **args,
-                            from_users=list(SUDO_USERS),
-                            pattern=sudo_reg),
-                    )
+        if bot and allow_sudo:
+            if not disable_edited:
                 bot.add_event_handler(
                     wrapper,
-                    events.NewMessage(
-                        **args, from_users=list(SUDO_USERS), pattern=sudo_reg
-                    ),
+                    events.MessageEdited(
+                        **args,
+                        from_users=list(SUDO_USERS),
+                        pattern=sudo_reg),
                 )
+            bot.add_event_handler(
+                wrapper,
+                events.NewMessage(
+                    **args, from_users=list(SUDO_USERS), pattern=sudo_reg
+                ),
+            )
         if AYIIN2:
             if not disable_edited:
                 AYIIN2.add_event_handler(
@@ -311,10 +310,10 @@ def ayiin_handler(
 
 
 def asst_cmd(**args):
-    pattern = args.get("pattern", None)
+    pattern = args.get("pattern")
     r_pattern = r"^[/!]"
     if pattern is not None and not pattern.startswith("(?i)"):
-        args["pattern"] = "(?i)" + pattern
+        args["pattern"] = f"(?i){pattern}"
     args["pattern"] = pattern.replace("^/", r_pattern, 1)
 
     def decorator(func):

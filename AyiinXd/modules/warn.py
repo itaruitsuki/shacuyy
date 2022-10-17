@@ -20,7 +20,7 @@ from AyiinXd.modules.sql_helper.warn_db import add_warn, reset_warn, warns
 from Stringyins import get_string
 
 def inline_mention(user, custom=None, html=False):
-    mention_text = get_display_name(user) or user if not custom else custom
+    mention_text = custom or get_display_name(user) or user
     if isinstance(user, types.User):
         if html:
             return f"<a href=tg://user?id={user.id}>{mention_text}</a>"
@@ -63,7 +63,7 @@ async def warn(e):
         except BaseException:
             reason = "unknown"
     count, r = warns(e.chat_id, user)
-    r = reason if not r else r + "|$|" + reason
+    r = f"{r}|$|{reason}" if r else reason
     try:
         x = adB.get_key("SETWARN")
         number, action = int(x.split()[0]), x.split()[1]

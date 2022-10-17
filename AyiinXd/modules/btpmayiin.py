@@ -78,23 +78,21 @@ async def on_btpm(event):
     except AttributeError:
         return
     name = event.text[1:]
-    btpm = get_btpm(name)
-    message_id_to_reply = event.message.reply_to_msg_id
-    if not message_id_to_reply:
-        message_id_to_reply = None
-    if btpm and btpm.f_mesg_id:
-        msg_o = await event.client.get_messages(entity=BOTLOG_CHATID,
-                                                ids=int(btpm.f_mesg_id))
-        await event.client.send_message(event.chat_id,
-                                        msg_o.message,
-                                        reply_to=message_id_to_reply,
-                                        file=msg_o.media)
-        await event.delete()
-    elif btpm and btpm.reply:
-        await event.client.send_message(event.chat_id,
-                                        btpm.reply,
-                                        reply_to=message_id_to_reply)
-        await event.delete()
+    if btpm := get_btpm(name):
+        message_id_to_reply = event.message.reply_to_msg_id or None
+        if btpm.f_mesg_id:
+            msg_o = await event.client.get_messages(entity=BOTLOG_CHATID,
+                                                    ids=int(btpm.f_mesg_id))
+            await event.client.send_message(event.chat_id,
+                                            msg_o.message,
+                                            reply_to=message_id_to_reply,
+                                            file=msg_o.media)
+            await event.delete()
+        elif btpm.reply:
+            await event.client.send_message(event.chat_id,
+                                            btpm.reply,
+                                            reply_to=message_id_to_reply)
+            await event.delete()
 
 
 @ayiin_cmd(pattern=r"savebt (\w*)")
@@ -147,10 +145,7 @@ async def on_btpm_list(event):
     for lbtpm in all_fbtpm:
         if message == get_string("btpm_4"):
             message = get_string("btpm_5")
-            message += f"**»** `${lbtpm.btpm}`\n"
-        else:
-            message += f"**»** `${lbtpm.btpm}`\n"
-
+        message += f"**»** `${lbtpm.btpm}`\n"
     await event.edit(message)
 
 

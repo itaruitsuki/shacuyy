@@ -39,60 +39,59 @@ async def print_changelogs(xx, ac_br, changelog):
 
 
 async def deploy(xx, repo, ups_rem, ac_br, txt):
-    if HEROKU_API_KEY is not None:
-        import heroku3
-
-        heroku = heroku3.from_key(HEROKU_API_KEY)
-        heroku_app = None
-        heroku_applications = heroku.apps()
-        if HEROKU_APP_NAME is None:
-            await eor(xx, get_string("upd_6")
-            )
-            repo.__del__()
-            return
-        for app in heroku_applications:
-            if app.name == HEROKU_APP_NAME:
-                heroku_app = app
-                break
-        if heroku_app is None:
-            await eor(xx, get_string("upd_5").format(txt)
-            )
-            return repo.__del__()
-        try:
-            from AyiinXd.modules.sql_helper.globals import addgvar, delgvar
-
-            delgvar("restartstatus")
-            addgvar("restartstatus", f"{xx.chat_id}\n{xx.id}")
-        except AttributeError:
-            pass
-        ups_rem.fetch(ac_br)
-        repo.git.reset("--hard", "FETCH_HEAD")
-        heroku_git_url = heroku_app.git_url.replace(
-            "https://", "https://api:" + HEROKU_API_KEY + "@"
-        )
-        if "heroku" in repo.remotes:
-            remote = repo.remote("heroku")
-            remote.set_url(heroku_git_url)
-        else:
-            remote = repo.create_remote("heroku", heroku_git_url)
-        try:
-            remote.push(refspec="HEAD:refs/heads/master", force=True)
-        except Exception as error:
-            await eor(xx, get_string("upd_7").format(txt, error))
-            return repo.__del__()
-        build = heroku_app.builds(order_by="created_at", sort="desc")[0]
-        if build.status == "failed":
-            await eod(
-                xx, get_string("upd_8")
-            )
-        await eor(
-            xx, get_string("upd_9").format("Deploy!")
-        )
-
-    else:
+    if HEROKU_API_KEY is None:
         return await eod(
             xx, get_string("upd_12")
         )
+    import heroku3
+
+    heroku = heroku3.from_key(HEROKU_API_KEY)
+    heroku_applications = heroku.apps()
+    if HEROKU_APP_NAME is None:
+        await eor(xx, get_string("upd_6")
+        )
+        repo.__del__()
+        return
+    heroku_app = next(
+        (app for app in heroku_applications if app.name == HEROKU_APP_NAME),
+        None,
+    )
+
+    if heroku_app is None:
+        await eor(xx, get_string("upd_5").format(txt)
+        )
+        return repo.__del__()
+    try:
+        from AyiinXd.modules.sql_helper.globals import addgvar, delgvar
+
+        delgvar("restartstatus")
+        addgvar("restartstatus", f"{xx.chat_id}\n{xx.id}")
+    except AttributeError:
+        pass
+    ups_rem.fetch(ac_br)
+    repo.git.reset("--hard", "FETCH_HEAD")
+    heroku_git_url = heroku_app.git_url.replace(
+        "https://", f"https://api:{HEROKU_API_KEY}@"
+    )
+
+    if "heroku" in repo.remotes:
+        remote = repo.remote("heroku")
+        remote.set_url(heroku_git_url)
+    else:
+        remote = repo.create_remote("heroku", heroku_git_url)
+    try:
+        remote.push(refspec="HEAD:refs/heads/master", force=True)
+    except Exception as error:
+        await eor(xx, get_string("upd_7").format(txt, error))
+        return repo.__del__()
+    build = heroku_app.builds(order_by="created_at", sort="desc")[0]
+    if build.status == "failed":
+        await eod(
+            xx, get_string("upd_8")
+        )
+    await eor(
+        xx, get_string("upd_9").format("Deploy!")
+    )
 
 
 async def update(xx, repo, ups_rem, ac_br):
@@ -124,10 +123,7 @@ async def upstream(event):
     "For .update command, check if the bot is up to date, update if specified"
     sender = await event.get_sender()
     me = await event.client.get_me()
-    if sender.id != me.id:
-        xx = await eor(event, get_string("upd_1"))
-    else:
-        xx = await eor(event, get_string("upd_1"))
+    xx = await eor(event, get_string("upd_1"))
     conf = event.pattern_match.group(1).strip()
     off_repo = b64decode(
         "aHR0cHM6Ly9naXRodWIuY29tL1B1bnlhQWxieS9Qcm9qZWN0cw=="

@@ -15,8 +15,8 @@ from telethon.tl.types import MessageService
 
 
 async def eor(event, text=None, **args):
-    time = args.get("time", None)
-    edit_time = args.get("edit_time", None)
+    time = args.get("time")
+    edit_time = args.get("edit_time")
     if "edit_time" in args:
         del args["edit_time"]
     if "time" in args:

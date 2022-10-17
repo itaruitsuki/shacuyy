@@ -26,7 +26,7 @@ async def notes_active(svd):
     for note in notes:
         if message == get_string("notes_1"):
             message = get_string("notes_3")
-        message += "`#{}`\n".format(note.keyword)
+        message += f"`#{note.keyword}`\n"
     await svd.edit(message)
 
 
@@ -85,11 +85,8 @@ async def incom_note(getnt):
             except AttributeError:
                 return
             notename = getnt.text[1:]
-            note = get_note(getnt.chat_id, notename)
-            message_id_to_reply = getnt.message.reply_to_msg_id
-            if not message_id_to_reply:
-                message_id_to_reply = None
-            if note:
+            if note := get_note(getnt.chat_id, notename):
+                message_id_to_reply = getnt.message.reply_to_msg_id or None
                 if note.f_mesg_id:
                     msg_o = await getnt.client.get_messages(
                         entity=BOTLOG_CHATID, ids=int(note.f_mesg_id)
@@ -121,10 +118,10 @@ async def kick_marie_notes(kick):
     filters = resp.text.split("-")[1:]
     for i in filters:
         if bot_type == "marie":
-            await kick.reply("/clear %s" % (i.strip()))
+            await kick.reply(f"/clear {i.strip()}")
         if bot_type == "rose":
             i = i.replace("`", "")
-            await kick.reply("/clear %s" % (i.strip()))
+            await kick.reply(f"/clear {i.strip()}")
         await sleep(0.3)
     await kick.respond(get_string("notes_11"))
     if BOTLOG_CHATID:

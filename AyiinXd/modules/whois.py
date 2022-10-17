@@ -126,7 +126,7 @@ async def fetch_info(replied_user, event):
     last_name = (last_name.replace("\u2060", "")
                  if last_name else ("Tidak Ada Nama Belakang"))
     username = f"@{username}" if username else ("Tidak Menggunakan Username")
-    user_bio = "Tidak Menggunakan Bio" if not user_bio else user_bio
+    user_bio = user_bio or "Tidak Menggunakan Bio"
 
     caption = "<b>INFORMASI PENGGUNA :</b>\n\n"
     caption += f"Nama Depan : {first_name}\n"

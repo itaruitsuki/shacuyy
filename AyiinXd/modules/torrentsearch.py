@@ -74,28 +74,29 @@ def dogbin(magnets):
 async def tor_search(event):
     if event.fwd_from:
         return
-    headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
-    }
-
     search_str = event.pattern_match.group(1)
 
     print(search_str)
     await event.edit(get_string("tose_6").format(search_str))
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
+    }
+
     if " " in search_str:
         search_str = search_str.replace(" ", "+")
         print(search_str)
         res = requests.get(
-            "https://www.torrentdownloads.me/search/?new=1&s_cat=0&search="
-            + search_str,
+            f"https://www.torrentdownloads.me/search/?new=1&s_cat=0&search={search_str}",
             headers,
         )
 
+
     else:
         res = requests.get(
-            "https://www.torrentdownloads.me/search/?search=" +
-            search_str,
-            headers)
+            f"https://www.torrentdownloads.me/search/?search={search_str}",
+            headers,
+        )
+
 
     source = bs(res.text, "lxml")
     urls = []
@@ -141,12 +142,7 @@ async def tor_search(event):
         search_str)
     counter = 0
     while counter != len(titles):
-        msg = (
-            msg
-            + "⁍ [{}]".format(titles[counter])
-            + "({})".format(shorted_links[counter])
-            + "\n\n"
-        )
+        msg = f"{msg}⁍ [{titles[counter]}]" + f"({shorted_links[counter]})" + "\n\n"
         counter += 1
     await event.edit(msg, link_preview=False)
 

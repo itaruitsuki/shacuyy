@@ -62,14 +62,14 @@ async def get_weather(weather):
     if "," in CITY:
         newcity = CITY.split(",")
         if len(newcity[1]) == 2:
-            CITY = newcity[0].strip() + "," + newcity[1].strip()
+            CITY = f"{newcity[0].strip()},{newcity[1].strip()}"
         else:
             country = await get_tz((newcity[1].strip()).title())
             try:
                 countrycode = timezone_countries[f"{country}"]
             except KeyError:
                 return await weather.edit("`Invalid country.`")
-            CITY = newcity[0].strip() + "," + countrycode.strip()
+            CITY = f"{newcity[0].strip()},{countrycode.strip()}"
     url = f"https://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={APPID}"
     request = get(url)
     result = json.loads(request.text)

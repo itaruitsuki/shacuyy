@@ -36,9 +36,11 @@ from Stringyins import get_string
 
 def vcmention(user):
     full_name = get_display_name(user)
-    if not isinstance(user, types.User):
-        return full_name
-    return f"[{full_name}](tg://user?id={user.id})"
+    return (
+        f"[{full_name}](tg://user?id={user.id})"
+        if isinstance(user, types.User)
+        else full_name
+    )
 
 
 def ytsearch(query: str):
@@ -60,9 +62,7 @@ async def ytdl(link: str):
     stdout, stderr = await bash(
         f'yt-dlp -g -f "best[height<=?720][width<=?1280]" {link}'
     )
-    if stdout:
-        return 1, stdout.split("\n")[0]
-    return 0, stderr
+    return (1, stdout.split("\n")[0]) if stdout else (0, stderr)
 
 
 async def skip_item(chat_id: int, x: int):
