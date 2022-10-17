@@ -49,8 +49,7 @@ Y_BUTTONS = [
 @ayiin_cmd(pattern=r"lang(?: |$)(.*)")
 async def setlang(event):
     await eor(event, get_string("com_1"))
-    languages = get_languages()
-    if languages:
+    if languages := get_languages():
         try:
             AyiinUBOT = await tgbot.get_me()
             BOT_USERNAME = AyiinUBOT.username
@@ -97,8 +96,7 @@ async def settt(event):
 @ayiin_cmd(pattern="string(?:\\s|$)([\\s\\S]*)")
 async def test_string(event):
     ayiin = await eor(event, get_string("com_1"))
-    buttons = build_keyboards(Y_BUTTONS)
-    if buttons:
+    if buttons := build_keyboards(Y_BUTTONS):
         try:
             AyiinUBOT = await tgbot.get_me()
             BOT_USERNAME =AyiinUBOT.username

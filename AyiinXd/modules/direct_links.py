@@ -125,10 +125,12 @@ def zippy_share(url: str) -> str:
         if "getElementById('dlbutton')" in script.text:
             url_raw = re.search(
                 r"= (?P<url>\".+\" \+ (?P<math>\(.+\)) .+);", script.text
-            ).group("url")
+            )["url"]
+
             math = re.search(
                 r"= (?P<url>\".+\" \+ (?P<math>\(.+\)) .+);", script.text
-            ).group("math")
+            )["math"]
+
             dl_url = url_raw.replace(math,
                                      '"' + str(ast.literal_eval(math)) + '"')
             break

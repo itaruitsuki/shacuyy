@@ -15,8 +15,7 @@ from Stringyins import get_string
 
 @ayiin_cmd(pattern="chelp(?: |$)(.*)")
 async def help(event):
-    args = event.pattern_match.group(1).lower()
-    if args:
+    if args := event.pattern_match.group(1).lower():
         if args in CMD_HELP:
             await eor(event, get_string("help_5").format(CMD_HELP[args], ch))
         else:
@@ -25,7 +24,7 @@ async def help(event):
         user = await event.client.get_me()
         string = ""
         for i in CMD_HELP:
-            string += "`" + str(i)
+            string += f"`{str(i)}"
             string += f"`\t\t\t{ICON_HELP}\t\t\t"
         xnxx = await eor(event, "🗿")
         sleep(3)

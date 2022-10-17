@@ -71,7 +71,7 @@ async def git_commit(file_name, mone):
         create_file = True
         if i == 'ContentFile(path="' + file_name + '")':
             return await mone.edit(get_string("comt_9"))
-    file_name = "AyiinXd/modules/" + file_name
+    file_name = f"AyiinXd/modules/{file_name}"
     if create_file:
         file_name = file_name.replace("./AyiinXd/temp/", "")
         print(file_name)

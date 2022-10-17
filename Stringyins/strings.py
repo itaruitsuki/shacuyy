@@ -31,13 +31,12 @@ except ModuleNotFoundError:
                 spli = line.split(":", maxsplit=1)
                 key = spli[0].strip()
                 value = _get_value(spli[1])
-                out.update({key: value or []})
+                out[key] = value or []
             elif "-" in line:
                 spli = line.split("-", maxsplit=1)
-                where = out[list(out.keys())[-1]]
-                if isinstance(where, list):
-                    value = _get_value(spli[1])
-                    if value:
+                if value := _get_value(spli[1]):
+                    where = out[list(out.keys())[-1]]
+                    if isinstance(where, list):
                         where.append(value)
         return out
 

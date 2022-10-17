@@ -543,7 +543,7 @@ async def cb_sticker(event):
     if not query:
         return await eod(event, get_string("stk_1"))
     xx = await eor(event, get_string("com_2"))
-    text = requests.get("https://combot.org/telegram/stickers?q=" + query).text
+    text = requests.get(f"https://combot.org/telegram/stickers?q={query}").text
     soup = bs(text, "lxml")
     results = soup.find_all("div", {"class": "sticker-pack__header"})
     if not results:

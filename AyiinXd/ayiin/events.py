@@ -79,10 +79,10 @@ async def get_user_from_event(
 
 
 async def checking(client):
-    gocheck = str("@ruangdiskusikami")
-    checker = str("@ruangprojects")
-    checkxd = str("@Ruang_Gabutku")
     if client:
+        gocheck = "@ruangdiskusikami"
+        checker = "@ruangprojects"
+        checkxd = "@Ruang_Gabutku"
         try:
             await client(Get(gocheck))
             await client(Get(checker))

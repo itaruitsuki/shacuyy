@@ -26,7 +26,7 @@ async def _(event):
     if "nhentai" in input_str:
         link_regex = r"(?:https?://)?(?:www\.)?nhentai\.net/g/(\d+)"
         match = re.match(link_regex, input_str)
-        code = match.group(1)
+        code = match[1]
     if input_str == "random":
         code = Utils.get_random_id()
     try:

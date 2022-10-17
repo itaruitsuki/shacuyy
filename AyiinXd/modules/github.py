@@ -23,7 +23,7 @@ async def _(event):
     URL = f"https://api.github.com/users/{username}"
     async with aiohttp.ClientSession() as session, session.get(URL) as request:
         if request.status == 404:
-            return await edit_delete(event, "`" + username + " Not Found`")
+            return await edit_delete(event, f"`{username} Not Found`")
         catevent = await edit_or_reply(event, "`fetching github info ...`")
         result = await request.json()
         photo = result["avatar_url"]
@@ -33,7 +33,7 @@ async def _(event):
         sec_res = requests.get(result["repos_url"])
         if sec_res.status_code == 200:
             limit = event.pattern_match.group(2)
-            limit = 5 if not limit else int(limit)
+            limit = int(limit) if limit else 5
             for repo in sec_res.json():
                 repos.append(f"[{repo['name']}]({repo['html_url']})")
                 limit -= 1

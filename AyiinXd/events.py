@@ -38,7 +38,7 @@ def ayiin_cmd(pattern=None, command=None, **args):
                 CMD_LIST.update({file_test: [cmd]})
         else:
             if len(CMD_HANDLER) == 2:
-                catreg = "^" + CMD_HANDLER
+                catreg = f"^{CMD_HANDLER}"
                 reg = CMD_HANDLER[1]
             elif len(CMD_HANDLER) == 1:
                 catreg = "^\\" + CMD_HANDLER
@@ -84,7 +84,7 @@ def command(**args):
 
     try:
         if pattern is not None and not pattern.startswith("(?i)"):
-            args["pattern"] = "(?i)" + pattern
+            args["pattern"] = f"(?i){pattern}"
     except BaseException:
         pass
 
@@ -93,13 +93,7 @@ def command(**args):
         try:
             cmd = re.search(reg, pattern)
             try:
-                cmd = cmd.group(1).replace(
-                    "$",
-                    "").replace(
-                    "\\",
-                    "").replace(
-                    "^",
-                    "")
+                cmd = cmd[1].replace("$", "").replace("\\", "").replace("^", "")
             except BaseException:
                 pass
             try:
@@ -141,7 +135,7 @@ def register(**args):
     args.get("own", False)
 
     if pattern is not None and not pattern.startswith("(?i)"):
-        args["pattern"] = "(?i)" + pattern
+        args["pattern"] = f"(?i){pattern}"
 
     if "disable_edited" in args:
         del args["disable_edited"]
@@ -211,8 +205,11 @@ def register(**args):
                     text += "Jika mau, Anda bisa melaporkan error ini, "
                     text += f"Cukup forward saja pesan ini ke {link}.\n\n"
 
-                    ftext = "========== DISCLAIMER =========="
-                    ftext += "\nFile ini HANYA diupload di sini,"
+                    ftext = (
+                        "========== DISCLAIMER =========="
+                        + "\nFile ini HANYA diupload di sini,"
+                    )
+
                     ftext += "\nkami hanya mencatat fakta error dan tanggal,"
                     ftext += "\nkami menghormati privasi Anda."
                     ftext += "\nJika mau, Anda bisa melaporkan error ini,"

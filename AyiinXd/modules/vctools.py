@@ -134,8 +134,8 @@ async def _(a):
             return await Ayiin.edit(get_string("error_1").format(e))
     else:
         chat_id = a.chat_id
-    file = "./AyiinXd/resources/ayiin.mp3"
     if chat_id:
+        file = "./AyiinXd/resources/ayiin.mp3"
         try:
             await call_py.join_group_call(
                 chat_id,
